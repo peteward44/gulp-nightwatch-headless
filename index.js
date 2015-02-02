@@ -13,7 +13,7 @@ var through = require('through2')
 var PLUGIN_NAME = 'nightwatch-headless';
 
 var nightwatchBinary = "node_modules/nightwatch/bin/nightwatch";
-var defaultSeleniumPath = "node_modules/selenium-server/lib/runner/selenium-server-standalone-2.44.0.jar";
+var defaultSeleniumPath = path.join( __dirname, "node_modules/selenium-server/lib/runner/selenium-server-standalone-2.44.0.jar" );
 var phantomJsBinary = "node_modules/phantomjs/bin/phantomjs";
 var tempNightwatchDir = "temp";
 
