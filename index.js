@@ -12,9 +12,9 @@ var through = require('through2')
 
 var PLUGIN_NAME = 'nightwatch-headless';
 
-var nightwatchBinary = "node_modules/nightwatch/bin/nightwatch";
-var defaultSeleniumPath = path.join( __dirname, "node_modules/selenium-server/lib/runner/selenium-server-standalone-2.44.0.jar" );
-var phantomJsBinary = "node_modules/phantomjs/bin/phantomjs";
+var nightwatchBinary = [ "node_modules/nightwatch/bin/nightwatch", path.join( __dirname, "node_modules/nightwatch/bin/nightwatch" ) ];
+var defaultSeleniumPath = [ "node_modules/selenium-server/lib/runner/selenium-server-standalone-2.44.0.jar", path.join( __dirname, "node_modules/selenium-server/lib/runner/selenium-server-standalone-2.44.0.jar" ) ];
+var phantomJsBinary = [ "node_modules/phantomjs/bin/phantomjs", path.join( __dirname, "node_modules/phantomjs/bin/phantomjs" ) ];
 var tempNightwatchDir = "temp";
 
 // NOTE: These may change in future versions of selenium & phantom
@@ -30,6 +30,15 @@ var g_options = null;
 
 var totalOutput = '';
 var httpServerInstance = null;
+
+var pickExisting = function( arr ) {
+	for ( var i=0; i<arr.length; ++i ) {
+		if ( fs.existsSync( arr[i] ) ) {
+			return arr[i];
+		}
+	}
+	return null;
+};
 
 // This spawns a process, and scans the stdout & stderr for a regex which indicates it has started successfully, and times out if it
 // doesn't see the regex after X time
@@ -99,7 +108,7 @@ var startSelenium = function( callback ) {
 				function( port, asyncCallback ) {
 					seleniumPort = port;
 					// Note: Couldn't use the selenium launcher directly as i can't shut the process down later
-					var seleniumPath = ( g_options.selenium && g_options.selenium.path ) ? g_options.selenium.path : defaultSeleniumPath;
+					var seleniumPath = ( g_options.selenium && g_options.selenium.path ) ? g_options.selenium.path : pickExisting( defaultSeleniumPath );
 					var args = [ '-jar', seleniumPath, '-role', 'hub', '-port', seleniumPort ];
 					gutil.log('Starting Selenium standalone server... [port ' + port + ']');
 					spawnWithTimeout( 'java', args, ( g_options.selenium && g_options.selenium.args ) ? g_options.selenium.args : null, seleniumStartedRegex, asyncCallback );
@@ -123,7 +132,7 @@ var startPhantomJs = function( callback ) {
 					}
 				},
 				function( port, asyncCallback ) {
-					var phantomPath = ( g_options.phantom && g_options.phantom.path ) ? g_options.phantom.path : phantomJsBinary;
+					var phantomPath = ( g_options.phantom && g_options.phantom.path ) ? g_options.phantom.path : pickExisting( phantomJsBinary );
 					var args = [ phantomPath, /*'--debug=true',*/ '--webdriver=' + port, '--webdriver-selenium-grid-hub=http://127.0.0.1:' + seleniumPort ];
 					gutil.log('Starting PhantomJS webdriver... [port ' + port + ']');
 					spawnWithTimeout( 'node', args, ( g_options.phantom && g_options.phantom.args ) ? g_options.phantom.args : null, phantomStartedRegex, asyncCallback );
@@ -187,7 +196,7 @@ var prepareNightwatchConfig = function() {
 var startNightwatch = function( callback ) {
 	// read in nightwatch.json, replace seleniumPort, write to temp file, pass to nightwatch
 	var configFile = prepareNightwatchConfig();
-	var nightwatchPath = ( g_options.nightwatch && g_options.nightwatch.path ) ? g_options.nightwatch.path : nightwatchBinary;
+	var nightwatchPath = ( g_options.nightwatch && g_options.nightwatch.path ) ? g_options.nightwatch.path : pickExisting( nightwatchBinary );
 	var args = [ nightwatchPath, '--env', 'default', '--config', configFile ];
 	gutil.log('Starting Nightwatch test runner...');
 	var p = spawn( 'node', args );
