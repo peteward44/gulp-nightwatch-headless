@@ -22,10 +22,10 @@ gulp.task( 'automated-tests', function() {
 				config: 'nightwatch.json'
 			},
 			selenium: {
-		//	  disable: true
+			//	disable: true
 			},
 			httpserver: {
-			  port: 2043,
+				port: 2043,
 				path: 'output'
 			},
 			verbose: true
