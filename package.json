@@ -1,7 +1,7 @@
 {
   "name": "gulp-nightwatch-headless",
   "description": "An almost-zero configuration Gulp plugin to run Selenium, PhantomJS and Nightwatch together in one process.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://github.com/peteward44/gulp-nightwatch-headless",
   "repository": {
 	"type": "git",
@@ -20,7 +20,7 @@
 	"fs-extra": "^0.16.5",
 	"freeport": "^1.0.4",
 	"node-http-server": "^2.0.0",
-	"selenium-server": "^2.44.0",
+	"selenium-server": "^2.45.0",
 	"phantomjs": "^1.9.15",
 	"nightwatch": "^0.5.36"
   },

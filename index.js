@@ -13,7 +13,7 @@ var through = require('through2')
 var PLUGIN_NAME = 'gulp-nightwatch-headless';
 
 var nightwatchBinary = [ "node_modules/nightwatch/bin/nightwatch", path.join( __dirname, "node_modules/nightwatch/bin/nightwatch" ) ];
-var defaultSeleniumPath = [ "node_modules/selenium-server/lib/runner/selenium-server-standalone-2.45.0.jar", path.join( __dirname, "node_modules/selenium-server/lib/runner/selenium-server-standalone-2.45.0.jar" ) ];
+var defaultSeleniumPath = [ "node_modules/selenium-server/lib/runner", path.join( __dirname, "node_modules/selenium-server/lib/runner" ) ];
 var phantomJsBinary = [ "node_modules/phantomjs/bin/phantomjs", path.join( __dirname, "node_modules/phantomjs/bin/phantomjs" ) ];
 var tempNightwatchDir = "temp";
 
@@ -93,6 +93,23 @@ var testAutomation = function( options ) {
 		subProcesses.push( proc );
 		return proc;
 	};
+	
+	
+	var findSeleniumJar = function( pathArray ) {
+		for ( var i=0; i<pathArray.length; ++i ) {
+			var p = pathArray[i];
+			if ( fs.existsSync( p ) ) {
+				var files = fs.readdirSync( p );
+				for ( var j=0; j<files.length; ++j ) {
+					var file = files[j];
+					if ( file.match( /^selenium-server-standalone-\d+\.\d+\.\d+\.jar/i ) ) {
+						return path.join( p, file );
+					}
+				}
+			}
+		}
+		throw new Error( "Could not find selenium JAR file" );
+	};
 
 
 	var startSelenium = function( callback ) {
@@ -110,7 +127,7 @@ var testAutomation = function( options ) {
 					function( port, asyncCallback ) {
 						seleniumPort = port;
 						// Note: Couldn't use the selenium launcher directly as i can't shut the process down later
-						var seleniumPath = ( options.selenium && options.selenium.path ) ? options.selenium.path : pickExisting( defaultSeleniumPath );
+						var seleniumPath = ( options.selenium && options.selenium.path ) ? options.selenium.path : findSeleniumJar( defaultSeleniumPath );
 						var args = [ '-jar', seleniumPath, '-role', 'hub', '-port', seleniumPort ];
 						gutil.log('Starting Selenium standalone server... [port ' + port + ']');
 						spawnWithTimeout( 'java', args, ( options.selenium && options.selenium.args ) ? options.selenium.args : null, seleniumStartedRegex, asyncCallback );
