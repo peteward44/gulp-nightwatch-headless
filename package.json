@@ -22,7 +22,7 @@
 	"node-http-server": "^2.0.0",
 	"selenium-server": "^2.45.0",
 	"phantomjs": "^1.9.15",
-	"nightwatch": "^0.5.36"
+	"nightwatch": "^0.6.3"
   },
   "devDependencies": {
   },
