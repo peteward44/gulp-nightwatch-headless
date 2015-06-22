@@ -1,14 +1,14 @@
 /*jslint node: true */
 'use strict';
 
-var through = require('through2')
-	, gutil = require('gulp-util')
-	, spawn = require('child_process').spawn
-	, async = require('async')
-	, fs = require('fs-extra')
-	, path = require('path')
-	, freeport = require('freeport')
-	, httpServer = require('node-http-server');
+var through = require('through2');
+var gutil = require('gulp-util');
+var spawn = require('child_process').spawn;
+var async = require('async');
+var fs = require('fs-extra');
+var path = require('path');
+var freeport = require('freeport');
+var httpServer = require('node-http-server');
 
 var PLUGIN_NAME = 'gulp-nightwatch-headless';
 
@@ -23,7 +23,7 @@ var phantomStartedRegex = new RegExp( "HUB\\s+Register\\s+\\-\\s+register\\s+\\-
 
 
 var testAutomation = function( options ) {
-	var options = options || {};
+	options = options || {};
 
 	var subProcesses = [];
 
@@ -70,7 +70,7 @@ var testAutomation = function( options ) {
 		};
 		
 		var timedOut = function() {
-			doCallback( 'Process timed out' )
+			doCallback( 'Process timed out' );
 		};
 		
 		var fullArgs;
