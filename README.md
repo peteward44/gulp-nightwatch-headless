@@ -1,3 +1,7 @@
+# Deprecated
+
+Karma (karma-runner/karma) is a much sleeker alternative to this now, this project won't be updated
+
 # gulp-nightwatch-headless
 An almost-zero configuration Gulp plugin to run Selenium, PhantomJS, Nightwatch and a HTTP server together in one process.
 
